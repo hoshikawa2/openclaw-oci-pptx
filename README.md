@@ -177,7 +177,7 @@ content.json (validated / governed)
   ↓
 PPTX Builder (template + content.json)
   ↓
-openclaw_oci_apresentacao.pptx
+openclaw_oci_presentation.pptx
 ```
 
 ---
@@ -391,7 +391,7 @@ export OPENCLAW_WORKDIR="$HOME/.openclaw/workspace/openclaw_folder"
 
 # Template + output
 export PPTX_TEMPLATE_PATH="$OPENCLAW_WORKDIR/template_openclaw_oci_clean.pptx"
-export PPTX_OUTPUT_PATH="$OPENCLAW_WORKDIR/openclaw_oci_apresentacao.pptx"
+export PPTX_OUTPUT_PATH="$OPENCLAW_WORKDIR/openclaw_oci_presentation.pptx"
 
 # Content JSON (if not set, defaults to $OPENCLAW_WORKDIR/content.json)
 export OCI_CONTENT_FILE="$OPENCLAW_WORKDIR/content.json"
