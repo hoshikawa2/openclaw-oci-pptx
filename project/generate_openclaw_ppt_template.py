@@ -76,9 +76,14 @@ class RedwoodSafePPT:
         return self.layouts[name]
 
     def add_content(self, title: str, subhead: str, body: str):
+
         slide = self.prs.slides.add_slide(self._layout(self.LAYOUT_CONTENT))
 
-        text_placeholders = [ph for ph in slide.placeholders if getattr(ph, "has_text_frame", False)]
+        text_placeholders = [
+            ph for ph in slide.placeholders
+            if ph.has_text_frame
+        ]
+
         if len(text_placeholders) < 2:
             raise RuntimeError("Content layout must have at least 2 text placeholders.")
 
