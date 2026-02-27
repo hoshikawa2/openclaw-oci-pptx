@@ -229,7 +229,7 @@ def main():
     deck.build(args.link, content, presenter=args.presenter, cover_subtitle=args.cover_subtitle)
     deck.save(Path(args.output))
 
-    print("✅ PPT generated:", Path(args.output).expanduser().resolve())
+    # print("✅ PPT generated:", Path(args.output).expanduser().resolve())
 
 
 if __name__ == "__main__":
