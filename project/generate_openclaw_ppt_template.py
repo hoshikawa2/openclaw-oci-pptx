@@ -90,23 +90,22 @@ class RedwoodSafePPT:
         text_placeholders[0].text = title
         text_placeholders[1].text = f"{subhead}\n\n{body}"
 
-    def add_cover(self, title: str, subtitle: str, presenter: str):
+    def add_cover(self, title, subtitle, presenter):
+
         slide = self.prs.slides.add_slide(self._layout(self.LAYOUT_COVER))
 
-        text_placeholders = [ph for ph in slide.placeholders if getattr(ph, "has_text_frame", False)]
+        text_placeholders = [
+            ph for ph in slide.placeholders
+            if ph.has_text_frame
+        ]
+
         if len(text_placeholders) < 2:
             raise RuntimeError("Cover layout must have at least 2 text placeholders.")
 
-        text_placeholders[0].text = title
-        text_placeholders[1].text = subtitle
-
-        # Optional placeholders by name
-        for ph in text_placeholders:
-            name = (getattr(ph, "name", "") or "").lower()
-            if "date" in name:
-                ph.text = datetime.now().strftime("%d %b %Y")
-            if "presenter" in name:
-                ph.text = presenter
+        text_placeholders[1].text = title
+        text_placeholders[3].text = subtitle
+        text_placeholders[4].text = presenter
+        text_placeholders[2].text = datetime.now().strftime("%d %b %Y")
 
     def save(self, output_path: Path):
         output_path = Path(output_path).expanduser()
