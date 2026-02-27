@@ -53,6 +53,8 @@ MANDATORY PIPELINE:
         <valid JSON only>
         EOF)
 
+        Drive the content of this presentation analyzing the content of the link.
+
         cover_title (string)
         introduction, technologies, architecture, problems, demo, conclusion (objects)
         - Each chapter object MUST have:
@@ -86,10 +88,10 @@ STEP 3 – EXECUTION
 
 Only now execute:
 
-    SET THE ENVIRONMENT VARIABLE WITH THE URL PASSED AS A BASIS FOR DOCUMENTATION: `export OCI_LINK_DEMO=<link passed as documentation>`
+    SET THE ENVIRONMENT VARIABLE WITH THE URL PASSED AS A BASIS FOR DOCUMENTATION AND THE FILE NAME GENERATED WITH CONTENT READ FROM THE LINK:
 
-    SET THE ENVIRONMENT VARIABLE WITH THE FILE NAME GENERATED WITH CONTENT READ FROM THE LINK: `export OCI_CONTENT_FILE=<NAME OF THE GENERATED FILE>`
-
+    `export OCI_LINK_DEMO=<link passed as documentation>`
+    `export OCI_CONTENT_FILE=<NAME OF THE GENERATED FILE>`
     `python $HOME/.openclaw/workspace/openclaw_folder/generate_openclaw_ppt_template.py`
 
 ----------------------------------------------

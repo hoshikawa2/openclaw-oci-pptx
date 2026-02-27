@@ -36,7 +36,7 @@ PPTX_CONTENT_PATH = _env_path(
     os.getenv("PPTX_CONTENT_PATH", str(OPENCLAW_WORKDIR / "content.json")),
 )
 
-DEFAULT_LINK = "https://docs.oracle.com/en-us/iaas/Content/generative-ai/home.htm"
+DEFAULT_LINK = os.getenv("OCI_LINK_DEMO", "https://docs.oracle.com/en-us/iaas/Content/generative-ai/home.htm")
 DEFAULT_PRESENTER = os.getenv("PPTX_PRESENTER", "Cristiano Hoshikawa")
 DEFAULT_COVER_SUBTITLE = os.getenv("PPTX_COVER_SUBTITLE", "Architecture")
 
