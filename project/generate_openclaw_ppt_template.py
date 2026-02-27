@@ -128,15 +128,15 @@ class OCIStrategicArchitectDeck:
         for b in bullets:
             lines.append(f"• {str(b).strip()}")
 
-        if evidence:
-            lines.append("")
-            lines.append("Evidence:")
-            for e in evidence[:2]:
-                lines.append(f"- {str(e).strip()}")
-
-        if keywords:
-            lines.append("")
-            lines.append("Keywords: " + ", ".join([str(k).strip() for k in keywords[:8]]))
+        # if evidence:
+        #     lines.append("")
+        #     lines.append("Evidence:")
+        #     for e in evidence[:2]:
+        #         lines.append(f"- {str(e).strip()}")
+        #
+        # if keywords:
+        #     lines.append("")
+        #     lines.append("Keywords: " + ", ".join([str(k).strip() for k in keywords[:8]]))
 
         return "\n".join(lines).strip()
 
