@@ -151,6 +151,10 @@ This approach provides:
 -   ✅ Enterprise-grade OCI infrastructure
 -   ✅ Secure request signing via OCI SDK
 
+### Secure Enterprise Prompting
+
+In this material, you have a prompt file that will be incorporate into the **OCI OpenAPI Proxy** (oci_openai_proxy.py). The prompt (pptx_runner_policy_strict.txt) was created to generate a automatic PowerPoint presentation based on any web documentation (github, docs.oracle.com). This example demonstrates a more enterprise secure way to use the OCI IAM to control the cloud resources like Object Storage and LLM.
+
 ### PPTX Builder
 
 **A PPTX builder** will generate a professional **PowerPoint deck from a template** (`.pptx`) + a structured `content.json`
@@ -535,6 +539,17 @@ And the Presentation generated is:
 
 ![img_4.png](images/img_4.png)
 
+![img_5.png](images/img_5.png)
+
+![img_6.png](images/img_6.png)
+
+![img_7.png](images/img_7.png)
+
+![img_8.png](images/img_8.png)
+
+![img_9.png](images/img_9.png)
+
+![img_10.png](images/img_10.png)
 
 ---
 
