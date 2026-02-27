@@ -364,7 +364,6 @@ def run_exec_loop(body: dict, max_steps: int = 10000) -> dict:
         if m_done:
             final_text = m_done.group(1).strip()
 
-            # devolve em formato OpenAI no fim
             return {
                 **last,
                 "choices": [{

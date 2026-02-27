@@ -1,27 +1,8 @@
 Whenever the user requests PPTX generation with external material (link, file, or text):
 
 ----------------------------------------------
-STEP 0 – FIXED WORKING DIRECTORY (MANDATORY)
-----------------------------------------------
-
-All operations MUST occur inside:
-    $HOME/.openclaw/workspace/openclaw_folder
-
-Execute:
-    cd $HOME/.openclaw/workspace/openclaw_folder
-
-----------------------------------------------
 STEP 1 – PREPARATION (MANDATORY)
 ----------------------------------------------
-
-The file generate_openclaw_ppt_template.py is located in $HOME/.openclaw/workspace/openclaw_folder
-The file read_url is located in $HOME/.openclaw/workspace/openclaw_folder
-The file read_file is located in $HOME/.openclaw/workspace/openclaw_folder
-
-Required:
-
-    read_url for links
-    read_file for local files
 
 GITHUB LINK HANDLING (REQUIRED)
 
@@ -37,7 +18,7 @@ GITHUB LINK HANDLING (REQUIRED)
     Convert to:
     https://raw.githubusercontent.com/user/repo/main/app.py
     Then call:
-    read_url <raw_url>
+    $HOME/.openclaw/workspace/openclaw_folder/read_url <raw_url>
 
     If the returned content contains <html or <script>, extract only visible text, removing HTML tags.
 
@@ -45,13 +26,18 @@ GITHUB LINK HANDLING (REQUIRED)
 
 MANDATORY PIPELINE:
 
-    1) Save material to file:
-        (exec read_url <url> > $HOME/.openclaw/workspace/openclaw_folder/material_raw.txt)
+    Generate a JSON structure with:
 
-    2) Analyze material_raw.txt and generate content.json explicitly:
-        (exec cat > $HOME/.openclaw/workspace/openclaw_folder/content.json << 'EOF'
-        <valid JSON only>
-        EOF)
+        STRICT JSON RULES:
+
+        - Use double quotes only.
+        - No trailing commas.
+        - No comments.
+        - No markdown.
+        - No text before or after JSON.
+        - No backticks.
+        - No explanations.
+        - Output must start with { and end with }.
 
         Drive the content of this presentation analyzing the content of the link.
 
@@ -64,38 +50,22 @@ MANDATORY PIPELINE:
         - It is FORBIDDEN to use generic bullets without keywords from the material.
         - VALIDATION: if it is not possible to extract at least 20 unique keywords from the total material → ABORT.
 
-    3) Validate JSON:
-        (exec python -m json.tool $HOME/.openclaw/workspace/openclaw_folder/content.json)
-
-        Only after successful validation:
-        (exec export OCI_LINK_DEMO="<url>")
-        (exec python generate_openclaw_ppt_template.py)
+    3) Save the JSON structure in the $HOME/.openclaw/workspace/openclaw_folder/content.json file
 
 ----------------------------------------------
-STEP 2 – MODIFICATION VALIDATION [STRICT VERSION]
-----------------------------------------------
-
-Before running:
-
-    - Verify that each chapter contains at least 1 literal keyword from the material.
-    - Verify that at least 8 keywords appear in 4 or more slides.
-    - Verify that each chapter contains at least 1 piece of evidence.
-    If it fails → ABORT.
-
-----------------------------------------------
-STEP 3 – EXECUTION
+STEP 2 – EXECUTION
 ----------------------------------------------
 
 Only now execute:
 
-    SET THE ENVIRONMENT VARIABLE WITH THE URL PASSED AS A BASIS FOR DOCUMENTATION AND THE FILE NAME GENERATED WITH CONTENT READ FROM THE LINK:
+    SET THE ENVIRONMENT VARIABLES AND EXECUTE PYTHON CODE:
 
     `export OCI_LINK_DEMO=<link passed as documentation>`
-    `export OCI_CONTENT_FILE=<NAME OF THE GENERATED FILE>`
+    `export OPENCLAW_WORKDIR=$HOME/.openclaw/workspace/openclaw_folder`
     `python $HOME/.openclaw/workspace/openclaw_folder/generate_openclaw_ppt_template.py`
 
 ----------------------------------------------
-STEP 4 – UPLOAD
+STEP 3 – UPLOAD
 ----------------------------------------------
 
     First, delete the file in object storage: `openclaw_oci_presentation.pptx`
@@ -106,6 +76,6 @@ STEP 4 – UPLOAD
     --force
 
 ----------------------------------------------
-STEP 5 – GENERATE PRE-AUTH LINK
+STEP 4 – GENERATE PRE-AUTH LINK
 ----------------------------------------------
     oci os preauth-request create ...
