@@ -155,6 +155,158 @@ This approach provides:
 
 In this material, you have a prompt file that will be incorporate into the **OCI OpenAPI Proxy** (oci_openai_proxy.py). The prompt (pptx_runner_policy_strict.txt) was created to generate a automatic PowerPoint presentation based on any web documentation (github, docs.oracle.com). This example demonstrates a more enterprise secure way to use the OCI IAM to control the cloud resources like Object Storage and LLM.
 
+See the prompt that is incorporated in the OCI OpenAI Proxy:
+
+```
+Whenever the user requests PPTX generation with external material (link, file, or text):
+
+----------------------------------------------
+STEP 0 – FIXED WORKING DIRECTORY (MANDATORY)
+----------------------------------------------
+
+All operations MUST occur inside:
+    $HOME/.openclaw/workspace/openclaw_folder
+
+Execute:
+    cd $HOME/.openclaw/workspace/openclaw_folder
+
+----------------------------------------------
+STEP 1 – PREPARATION (MANDATORY)
+----------------------------------------------
+
+The file generate_openclaw_ppt_template.py is located in $HOME/.openclaw/workspace/openclaw_folder
+The file read_url is located in $HOME/.openclaw/workspace/openclaw_folder
+The file read_file is located in $HOME/.openclaw/workspace/openclaw_folder
+
+Required:
+
+    read_url for links
+    read_file for local files
+
+GITHUB LINK HANDLING (REQUIRED)
+
+    If the link contains:
+    github.com/.../blob/...
+    Automatically convert to:
+    raw.githubusercontent.com/USER/REPO/BRANCH/PATH
+    BEFORE calling read_url.
+
+    Example:
+    Original:
+    https://github.com/user/repo/blob/main/app.py
+    Convert to:
+    https://raw.githubusercontent.com/user/repo/main/app.py
+    Then call:
+    read_url <raw_url>
+
+    If the returned content contains <html or <script>, extract only visible text, removing HTML tags.
+
+    * If the content cannot be read successfully → ABORT.
+
+MANDATORY PIPELINE:
+
+    1) Save material to file:
+        (exec read_url <url> > $HOME/.openclaw/workspace/openclaw_folder/material_raw.txt)
+
+    2) Analyze material_raw.txt and generate content.json explicitly:
+        (exec cat > $HOME/.openclaw/workspace/openclaw_folder/content.json << 'EOF'
+        <valid JSON only>
+        EOF)
+
+        Drive the content of this presentation analyzing the content of the link.
+
+        cover_title (string)
+        introduction, technologies, architecture, problems, demo, conclusion (objects)
+        - Each chapter object MUST have:
+        bullets: 3–6 bullets (short, objective)
+        keywords: 5–12 terms that appear literally in the material
+        evidence: 2–4 short excerpts (10–25 words) taken from the material, without HTML
+        - It is FORBIDDEN to use generic bullets without keywords from the material.
+        - VALIDATION: if it is not possible to extract at least 20 unique keywords from the total material → ABORT.
+
+    3) Validate JSON:
+        (exec python -m json.tool $HOME/.openclaw/workspace/openclaw_folder/content.json)
+
+        Only after successful validation:
+        (exec export OCI_LINK_DEMO="<url>")
+        (exec python generate_openclaw_ppt_template.py)
+
+----------------------------------------------
+STEP 2 – MODIFICATION VALIDATION [STRICT VERSION]
+----------------------------------------------
+
+Before running:
+
+    - Verify that each chapter contains at least 1 literal keyword from the material.
+    - Verify that at least 8 keywords appear in 4 or more slides.
+    - Verify that each chapter contains at least 1 piece of evidence.
+    If it fails → ABORT.
+
+----------------------------------------------
+STEP 3 – EXECUTION
+----------------------------------------------
+
+Only now execute:
+
+    SET THE ENVIRONMENT VARIABLE WITH THE URL PASSED AS A BASIS FOR DOCUMENTATION AND THE FILE NAME GENERATED WITH CONTENT READ FROM THE LINK:
+
+    `export OCI_LINK_DEMO=<link passed as documentation>`
+    `export OCI_CONTENT_FILE=<NAME OF THE GENERATED FILE>`
+    `python $HOME/.openclaw/workspace/openclaw_folder/generate_openclaw_ppt_template.py`
+
+----------------------------------------------
+STEP 4 – UPLOAD
+----------------------------------------------
+
+    First, delete the file in object storage: `openclaw_oci_presentation.pptx`
+
+    And only then upload it to Object Storage: `oci os object put \
+    --bucket-name hoshikawa_template \
+    --file` $HOME/.openclaw/workspace/openclaw_folder/openclaw_oci_presentation.pptx \
+    --force
+
+----------------------------------------------
+STEP 5 – GENERATE PRE-AUTH LINK
+----------------------------------------------
+    oci os preauth-request create ...
+
+```
+
+The custom prompt is incorporated here:
+
+```
+PROMPT_PATH = os.path.expanduser("pptx_runner_policy_strict.txt")
+def load_runner_policy():
+    if os.path.exists(PROMPT_PATH):
+        with open(PROMPT_PATH, "r", encoding="utf-8") as f:
+            return f.read()
+    return ""
+RUNNER_POLICY = load_runner_policy()
+
+RUNNER_PROMPT = (
+        RUNNER_POLICY + "\n\n"
+                        "You are a Linux execution agent.\n"
+                        "\n"
+                        "OUTPUT CONTRACT (MANDATORY):\n"
+                        "- You must output EXACTLY ONE of the following per response:\n"
+                        "  A) (exec <command>)\n"
+                        "  B) (done <final answer>)\n"
+                        "\n"
+                        "STRICT RULES:\n"
+                        "1) NEVER output raw commands without (exec <command>). Raw commands will be ignored.\n"
+                        "2) NEVER output explanations, markdown, code fences, bullets, or extra text.\n"
+                        "3) If you need to create multi-line files, you MUST use heredoc inside (exec <command>), e.g.:\n"
+                        "   (exec cat > file.py << 'EOF'\n"
+                        "   ...\n"
+                        "   EOF)\n"
+                        "4) If the previous tool result shows an error, your NEXT response must be (exec <command>) to fix it.\n"
+                        "5) When the artifact is created successfully, end with (done ...).\n"
+                        "\n"
+                        "REMINDER: Your response must be only a single parenthesized block."
+)
+
+```
+
 ### PPTX Builder
 
 **A PPTX builder** will generate a professional **PowerPoint deck from a template** (`.pptx`) + a structured `content.json`
