@@ -429,6 +429,24 @@ curl http://127.0.0.1:8050/v1/chat/completions   -H "Content-Type: application/j
     "model": "gpt-5",
     "messages": [{"role": "user", "content": "Hello"}]
   }'
+  
+```
+
+Or if you want to generate a PPTX direct by the **oci_openai_proxy.py**:
+
+```bash
+
+curl http://127.0.0.1:8050/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+        "model": "gpt-5",
+        "messages": [
+            {"role": "user", "content": "generate pptx from https://github.com/hoshikawa2/flexcube-14.5 in portuguese"}
+        ],
+        "temperature": 0.2
+      }'
+
+
 ```
 
 ---
