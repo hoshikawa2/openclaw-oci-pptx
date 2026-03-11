@@ -381,6 +381,10 @@ By putting an OpenAI-compatible API in front of OCI, you get:
 - ✅ Streaming compatibility (simulated if OCI returns full text)
 - ✅ Governance inside your tenancy
 
+![img_11.png](images/img_11.png)
+
+![img_12.png](images/img_12.png)
+
 ---
 
 ## Requirements

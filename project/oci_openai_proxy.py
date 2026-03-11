@@ -22,10 +22,10 @@ import requests
 
 OCI_CONFIG_FILE = os.getenv("OCI_CONFIG_FILE", os.path.expanduser("~/.oci/config"))
 OCI_PROFILE = os.getenv("OCI_PROFILE", "DEFAULT")
-OCI_COMPARTMENT_ID = os.getenv("OCI_COMPARTMENT_ID", "<YOUR_COMPARTMENT_ID>")
+OCI_COMPARTMENT_ID = os.getenv("OCI_COMPARTMENT_ID", "ocid1.compartment.oc1..aaaaaaaaexpiw4a7dio64mkfv2t273s2hgdl6mgfvvyv7tycalnjlvpvfl3q")
 OCI_GENAI_ENDPOINT = os.getenv(
     "OCI_GENAI_ENDPOINT",
-    "https://inference.generativeai.<region>.oci.oraclecloud.com"
+    "https://inference.generativeai.us-chicago-1.oci.oraclecloud.com"
 )
 if not OCI_COMPARTMENT_ID:
     raise RuntimeError("OCI_COMPARTMENT_ID not defined")
